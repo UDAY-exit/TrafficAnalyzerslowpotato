@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash screen theme: shown by OS before Activity.onCreate().
+         windowSplashScreenBackground matches DarkBackground so no colour flash. -->
+    <style name="Theme.TrafficAnalyzer.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0A0F1E</item>
+        <item name="postSplashScreenTheme">@style/Theme.TrafficAnalyzer</item>
+    </style>
+
+    <!-- Main app theme: applied after splash, all bars match DarkBackground. -->
+    <style name="Theme.TrafficAnalyzer" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">#0A0F1E</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">#0A0F1E</item>
+        <item name="android:navigationBarColor">#0A0F1E</item>
+    </style>
+</resources>

@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traffic Analyzer — Teacher Notes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.6;
+  }
+
+  /* ── COVER PAGE ── */
+  .cover {
+    page-break-after: always;
+    background: linear-gradient(135deg, #0a0f1e 0%, #1a2744 60%, #0d3b6e 100%);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 40px;
+  }
+  .cover-badge {
+    background: rgba(0,255,136,0.15);
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    line-height: 1.1;
+  }
+  .cover h1 span { color: #00ff88; }
+  .cover .subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 50px;
+    max-width: 500px;
+  }
+  .cover-divider {
+    width: 60px;
+    height: 3px;
+    background: #00ff88;
+    margin: 30px auto;
+    border-radius: 2px;
+  }
+  .cover-meta {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    line-height: 2;
+  }
+  .cover-meta strong { color: rgba(255,255,255,0.8); }
+
+  /* ── CONTENT PAGES ── */
+  .page {
+    padding: 50px 60px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .section { margin-bottom: 40px; page-break-inside: avoid; }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8edf5;
+  }
+  .section-number {
+    background: #0a0f1e;
+    color: #00ff88;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0a0f1e;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a2744;
+    margin: 18px 0 8px 0;
+  }
+
+  p { margin-bottom: 10px; color: #333; }
+
+  /* Code blocks */
+  pre {
+    background: #0d1117;
+    color: #c9d1d9;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 10px 0 14px 0;
+    border-left: 3px solid #00ff88;
+  }
+  code {
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 11.5px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 12px;
+  }
+  th {
+    background: #0a0f1e;
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #e8edf5;
+    color: #333;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f8faff; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Callout boxes */
+  .callout {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; }
+  .callout-info { background: #eff6ff; border-left: 3px solid #3b82f6; }
+  .callout-warn { background: #fffbeb; border-left: 3px solid #f59e0b; }
+  .callout-tip  { background: #f0fdf4; border-left: 3px solid #22c55e; }
+  .callout-body { font-size: 12.5px; color: #374151; }
+  .callout-body strong { display: block; margin-bottom: 3px; color: #1f2937; }
+
+  /* Flow diagram */
+  .flow {
+    background: #0d1117;
+    color: #8b949e;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-family: 'Consolas', monospace;
+    font-size: 11.5px;
+    line-height: 1.9;
+    margin: 10px 0;
+  }
+  .flow .green { color: #7ee787; }
+  .flow .cyan  { color: #79c0ff; }
+  .flow .yellow{ color: #e3b341; }
+  .flow .red   { color: #ff7b72; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10.5px;
+    font-weight: 600;
+    margin: 1px 2px;
+  }
+  .badge-green { background: #d1fae5; color: #065f46; }
+  .badge-red   { background: #fee2e2; color: #991b1b; }
+  .badge-blue  { background: #dbeafe; color: #1e40af; }
+  .badge-yellow{ background: #fef3c7; color: #92400e; }
+  .badge-purple{ background: #ede9fe; color: #5b21b6; }
+
+  /* File tree */
+  .filetree {
+    background: #0d1117;
+    color: #8b949e;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    margin: 10px 0;
+  }
+  .filetree .dir  { color: #79c0ff; font-weight: 600; }
+  .filetree .file { color: #c9d1d9; }
+  .filetree .note { color: #6e7681; font-style: italic; }
+  .filetree .new  { color: #7ee787; }
+
+  /* Page break helpers */
+  .pagebreak { page-break-before: always; }
+
+  /* Footer */
+  .footer {
+    margin-top: 50px;
+    padding-top: 16px;
+    border-top: 1px solid #e8edf5;
+    font-size: 10.5px;
+    color: #9ca3af;
+    text-align: center;
+  }
+
+  /* Print settings */
+  @media print {
+    body { font-size: 12px; }
+    .cover { min-height: auto; padding: 80px 60px; }
+    pre, .flow, .filetree { font-size: 10.5px; }
+    .page { padding: 40px 60px; }
+    @page { margin: 0; size: A4; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     COVER PAGE                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-badge">Cybersecurity · SOC Demo · Android App</div>
+  <h1>Traffic<span>Analyzer</span></h1>
+  <p class="subtitle">A real-time network packet capture &amp; filter application built on Android VpnService — no root required.</p>
+  <div class="cover-divider"></div>
+  <div class="cover-meta">
+    <strong>Teacher / Developer Notes</strong><br>
+    Full architecture · Data flow · Filter engine · Bug fixes<br><br>
+    Department of Computer Science<br>
+    February 2026
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     PAGE 1                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <!-- 1. PURPOSE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2>What Is This Application?</h2>
+    </div>
+
+    <p>
+      <strong>Traffic Analyzer</strong> is an Android application that captures, parses, analyzes,
+      and filters every network packet that passes through the device — <strong>without requiring root access</strong>.
+      It is designed as a <strong>cybersecurity / SOC (Security Operations Center) classroom demo</strong>
+      tool to visually show students what real network packets look like, how traffic can be categorized
+      and filtered, and how IP reputation checks work in real time.
+    </p>
+
+    <div class="callout callout-tip">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-body">
+        <strong>Learning Objective</strong>
+        Students can see every packet leaving and entering their phone — source IP, destination IP,
+        protocol, ports, TCP SYN flags — and apply live filter rules just like a professional firewall or IDS.
+      </div>
+    </div>
+
+    <h3>At a Glance</h3>
+    <table>
+      <tr><th>Feature</th><th>How It Is Achieved</th></tr>
+      <tr><td>Capture device traffic</td><td>Android <code>VpnService</code> API — creates a virtual TUN network interface</td></tr>
+      <tr><td>Parse packet headers</td><td>Custom <code>IPv4Parser</code> reads raw bytes (RFC 791)</td></tr>
+      <tr><td>Display packets live</td><td>Jetpack Compose <code>LazyColumn</code> with real-time StateFlow updates</td></tr>
+      <tr><td>Filter traffic (5 stages)</td><td><code>PacketFilterEngine</code> with configurable rules per mode</td></tr>
+      <tr><td>Geo &amp; reputation lookup</td><td>IPinfo REST API (token-authenticated)</td></tr>
+      <tr><td>No root required</td><td>Android VPN permission dialog — user grants once</td></tr>
+    </table>
+  </div>
+
+
+  <!-- 2. HOW VPN CAPTURE WORKS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2>How VPN Packet Capture Works</h2>
+    </div>
+
+    <h3>The TUN Interface — Key Concept</h3>
+    <p>
+      Android's <code>VpnService</code> API lets any app (with user permission) create a
+      <strong>virtual TUN network interface</strong> — essentially a fake network adapter that
+      the OS treats as real. Once created, the OS routes <em>all IPv4 traffic</em> from the device
+      through this interface. The app can read those raw bytes from a file descriptor.
+    </p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">📡</div>
+      <div class="callout-body">
+        <strong>TUN vs TAP</strong>
+        TUN operates at the <em>network layer (Layer 3)</em> — it sees raw IP packets.
+        TAP operates at Layer 2 (Ethernet frames). Android VpnService uses TUN, so we get
+        complete IPv4 headers but not Ethernet headers.
+      </div>
+    </div>
+
+    <h3>Step-by-Step Packet Flow</h3>
+    <div class="flow">
+<span class="green">1.</span> App on device makes any network request (browser, WhatsApp, YouTube…)
+   <span class="yellow">↓</span>
+<span class="green">2.</span> OS routes the packet to the <span class="cyan">TUN interface</span> (virtual adapter we created)
+   <span class="yellow">↓</span>
+<span class="green">3.</span> <span class="cyan">TrafficVpnService</span> reads raw bytes from <code>ParcelFileDescriptor</code> in a loop
+   <span class="yellow">↓</span>
+<span class="green">4.</span> <span class="cyan">IPv4Parser.parse(buffer)</span> extracts header fields (IPs, ports, protocol, flags)
+   <span class="yellow">↓</span>
+<span class="green">5.</span> <span class="cyan">Packet</span> object emitted on <code>SharedFlow&lt;Packet&gt;</code>
+   <span class="yellow">↓</span>
+<span class="green">6.</span> <span class="cyan">PacketViewModel</span> collects each Packet via <code>collectJob</code>
+   <span class="yellow">↓</span>
+<span class="green">7.</span> <span class="cyan">PacketFilterEngine.apply(packet, config)</span> returns PASS or DROP
+   <span class="yellow">↓</span>
+<span class="green">8.</span> <span class="cyan">filteredPackets StateFlow</span> updated → Compose UI recomposes → row appears on screen
+    </div>
+
+    <h3>Critical Detail — Self-Exclusion</h3>
+    <p>
+      The VPN also captures the <strong>app's own traffic</strong>. Without exclusion, when the app
+      calls the IPinfo API to look up a reputation, that very API call gets captured by itself —
+      creating a loop and causing <code>UnknownHostException: Unable to resolve host ipinfo.io</code>.
+    </p>
+    <pre>// In TrafficVpnService.establishVpn()
+builder.addDisallowedApplication(packageName)
+// This tells Android: route everything through TUN EXCEPT this app's own packets.</pre>
+  </div>
+
+</div><!-- end page 1 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     PAGE 2                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="page pagebreak">
+
+  <!-- 3. IPv4 PARSING -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2>IPv4 Packet Parsing (RFC 791)</h2>
+    </div>
+
+    <p>
+      The <code>IPv4Parser</code> reads a raw byte array and extracts all fields we need
+      from the standard IPv4 header format. No library is used — it is pure byte math.
+    </p>
+
+    <h3>Header Layout (what each byte means)</h3>
+    <pre>Byte  0  : Version (top 4 bits=4) + IHL — header length in 32-bit words
+Bytes 2-3: Total Length of the packet
+Byte  9  : Protocol  (6 = TCP,  17 = UDP,  1 = ICMP)
+Bytes 12-15: Source IP address  (4 bytes → "192.168.1.5")
+Bytes 16-19: Destination IP address
+
+— TCP/UDP header starts immediately after the IP header (at offset IHL×4) —
+Bytes IHL+0 to IHL+1 : Source Port
+Bytes IHL+2 to IHL+3 : Destination Port
+Byte  IHL+13          : TCP Flags
+                        Bit 1 (0x02) = SYN flag ← new connection attempt</pre>
+
+    <h3>What We Extract Per Packet</h3>
+    <table>
+      <tr><th>Field</th><th>Meaning</th><th>Used For</th></tr>
+      <tr><td><code>sourceIp</code></td><td>Sender IP address</td><td>Display, filter, reputation lookup</td></tr>
+      <tr><td><code>destIp</code></td><td>Receiver IP address</td><td>Display, local IP filter (RFC-1918)</td></tr>
+      <tr><td><code>sourcePort</code></td><td>Sender port number</td><td>Display</td></tr>
+      <tr><td><code>destPort</code></td><td>Receiver port number</td><td>Web port filter, port badge label</td></tr>
+      <tr><td><code>protocol</code></td><td>TCP / UDP / ICMP</td><td>Protocol filter, badge color</td></tr>
+      <tr><td><code>length</code></td><td>Packet size in bytes</td><td>Display</td></tr>
+      <tr><td><code>isSyn</code></td><td>TCP SYN flag set?</td><td>SYN badge, SYN-only filter mode</td></tr>
+    </table>
+  </div>
+
+
+  <!-- 4. FILTER ENGINE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2>The Filter Engine — 5-Stage Pipeline</h2>
+    </div>
+
+    <p>
+      Every captured packet passes through a 5-stage filter chain. Each stage independently
+      decides to PASS or DROP. The engine <strong>short-circuits</strong> — as soon as one stage
+      returns DROP, the remaining stages are skipped.
+    </p>
+
+    <div class="flow">
+<span class="cyan">Packet</span>
+  <span class="yellow">→</span> [Stage 1] Protocol Check  <span class="green">tcpOnly?</span>    → DROP if not TCP
+  <span class="yellow">→</span> [Stage 2] Direction Check <span class="green">outboundOnly?</span> → DROP if source is local (RFC-1918)
+  <span class="yellow">→</span> [Stage 3] SYN Flag Check  <span class="green">synOnly?</span>    → DROP if not a SYN packet
+  <span class="yellow">→</span> [Stage 4] Port Range Check <span class="green">webPortsOnly?</span>→ DROP if not port 80/443/8080/8443
+  <span class="yellow">→</span> [Stage 5] Local Dest Check <span class="green">dropLocal?</span>  → DROP if destination is RFC-1918
+  <span class="yellow">→</span> [Optional] Reputation     <span class="green">abuseScore</span>  → DROP if score &gt; threshold
+  <span class="yellow">→</span> <span class="green">PASSED</span> ✓
+    </div>
+
+    <h3>Filter Modes — Presets</h3>
+    <table>
+      <tr><th>Mode</th><th>What It Shows</th><th>Stages Active</th></tr>
+      <tr><td><span class="badge badge-blue">RAW</span></td><td>Everything, zero filtering</td><td>None</td></tr>
+      <tr><td><span class="badge badge-purple">CONNECTIONS</span></td><td>TCP traffic going outbound</td><td>Stage 1 + 2</td></tr>
+      <tr><td><span class="badge badge-green">WEB_ONLY</span></td><td>HTTP/HTTPS/web traffic only</td><td>Stage 1 + 2 + 4</td></tr>
+      <tr><td><span class="badge badge-red">SUSPICIOUS_ONLY</span></td><td>SYN packets to external IPs</td><td>Stage 1 + 2 + 3 + 5</td></tr>
+      <tr><td><span class="badge badge-yellow">CUSTOM</span></td><td>User toggles each rule manually</td><td>Any combination</td></tr>
+    </table>
+
+    <h3>RFC-1918 Private Address Ranges</h3>
+    <p>Used by Stage 2 (outbound detection) and Stage 5 (local destination drop):</p>
+    <pre>10.0.0.0    – 10.255.255.255    (10/8)
+172.16.0.0  – 172.31.255.255   (172.16/12)
+192.168.0.0 – 192.168.255.255  (192.168/16)
+127.0.0.0   – 127.255.255.255  (loopback)
+169.254.0.0 – 169.254.255.255  (link-local)</pre>
+
+    <h3>FilterConfig — All Toggles</h3>
+    <pre>data class FilterConfig(
+    val tcpOnly:              Boolean = false,  // Stage 1
+    val outboundOnly:         Boolean = false,  // Stage 2
+    val synOnly:              Boolean = false,  // Stage 3
+    val webPortsOnly:         Boolean = false,  // Stage 4
+    val dropLocalDestination: Boolean = false,  // Stage 5
+    val suspiciousOnly:       Boolean = false,  // Shorthand preset
+    val abuseScoreThreshold:  Int     = 25,     // Reputation cutoff (0–100)
+    val showDropped:          Boolean = false   // Show DROPs dimmed in list
+)</pre>
+  </div>
+
+</div><!-- end page 2 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     PAGE 3                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="page pagebreak">
+
+  <!-- 5. ARCHITECTURE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2>Application Architecture (MVVM + Manual DI)</h2>
+    </div>
+
+    <p>
+      The app follows the <strong>MVVM</strong> (Model-View-ViewModel) pattern with <strong>Manual
+      Dependency Injection</strong> via an <code>AppContainer</code> — no Hilt or Dagger is used,
+      keeping the project simple and transparent for learning.
+    </p>
+
+    <div class="flow">
+┌─────────────────────────────────────────────────────────┐
+│                     <span class="cyan">UI LAYER</span>                            │
+│  MainActivity → NavHost → <span class="green">PacketListScreen</span>            │
+│                            ↓                            │
+│         <span class="green">FilterPanel</span>  +  <span class="green">FilteredPacketRowItem</span>         │
+└───────────────────────┬─────────────────────────────────┘
+                        │  observes StateFlow (Compose)
+┌───────────────────────▼─────────────────────────────────┐
+│                 <span class="cyan">VIEWMODEL LAYER</span>                        │
+│  <span class="yellow">PacketViewModel</span>     ←→     <span class="yellow">AnalysisViewModel</span>          │
+│  (capture + filter)         (IP reputation lookup)     │
+└──────────┬──────────────────────────┬────────────────────┘
+           │ collects                 │ calls
+┌──────────▼────────┐     ┌───────────▼────────────────┐
+│  <span class="cyan">PacketRepository</span>  │     │   <span class="cyan">IpInfoRepository</span>        │
+│  (wraps VPN flow) │     │   (Retrofit → IPinfo API)  │
+└──────────┬────────┘     └────────────────────────────┘
+           │ emits Packet objects
+┌──────────▼──────────────────────────────────────────────┐
+│           <span class="red">TrafficVpnService</span>  (Foreground Service)       │
+│  TUN Interface → 32KB buffer → <span class="yellow">IPv4Parser</span> → emit       │
+└─────────────────────────────────────────────────────────┘
+    </div>
+
+    <h3>Complete File Structure</h3>
+    <div class="filetree">
+<span class="dir">app/src/main/java/com/trafficanalyzer/</span>
+│
+├── <span class="file">TrafficAnalyzerApp.kt</span>      <span class="note">← Application class, creates AppContainer</span>
+├── <span class="file">AppContainer.kt</span>            <span class="note">← Manual DI: instantiates repos, services</span>
+├── <span class="file">MainActivity.kt</span>            <span class="note">← Entry point, SplashScreen, NavHost</span>
+│
+├── <span class="dir">vpn/</span>
+│   └── <span class="file">TrafficVpnService.kt</span>   <span class="note">← Foreground service, TUN, packet emission</span>
+│
+├── <span class="dir">util/</span>
+│   └── <span class="file">IPv4Parser.kt</span>          <span class="note">← Pure byte-level IPv4/TCP/UDP parser</span>
+│
+├── <span class="dir">data/</span>
+│   ├── <span class="dir">model/</span>
+│   │   └── <span class="file">Packet.kt</span>          <span class="note">← Data class: all parsed fields + isSyn</span>
+│   ├── <span class="dir">network/</span>
+│   │   └── <span class="file">IpInfoApiService.kt</span><span class="note">← Retrofit interface for IPinfo REST API</span>
+│   └── <span class="dir">repository/</span>
+│       ├── <span class="file">PacketRepository.kt</span>    <span class="note">← Delegates to TrafficVpnService flow</span>
+│       └── <span class="file">IpInfoRepository.kt</span>    <span class="note">← Wraps IPinfo API call</span>
+│
+├── <span class="dir">analysis/</span>                      <span class="new">← Entire package added (Filter Engine)</span>
+│   ├── <span class="new">FilterMode.kt</span>          <span class="note">← Enum: RAW, CONNECTIONS, WEB_ONLY, etc.</span>
+│   ├── <span class="new">FilterRule.kt</span>          <span class="note">← Enum of rules + FilterDecision class</span>
+│   ├── <span class="new">FilterConfig.kt</span>        <span class="note">← All toggle settings + forMode() presets</span>
+│   ├── <span class="new">FilterStats.kt</span>         <span class="note">← Immutable counters: pass/drop per rule</span>
+│   ├── <span class="new">FilteredPacket.kt</span>      <span class="note">← Packet + FilterDecision wrapper</span>
+│   └── <span class="new">PacketFilterEngine.kt</span>  <span class="note">← Pure object: apply(), isLocalIp()</span>
+│
+├── <span class="dir">viewmodel/</span>
+│   ├── <span class="file">PacketViewModel.kt</span>     <span class="note">← VPN lifecycle + flows + filter control</span>
+│   └── <span class="file">AnalysisViewModel.kt</span>   <span class="note">← IP reputation lookup</span>
+│
+└── <span class="dir">ui/</span>
+    ├── <span class="dir">screens/</span>
+    │   ├── <span class="file">PacketListScreen.kt</span>    <span class="note">← Main screen: FilterPanel + list</span>
+    │   └── <span class="file">AnalysisScreen.kt</span>      <span class="note">← Geo/reputation detail for one IP</span>
+    └── <span class="dir">components/</span>
+        ├── <span class="new">FilterPanel.kt</span>         <span class="note">← Expandable filter control card</span>
+        ├── <span class="new">FilterToggleRow.kt</span>     <span class="note">← Switch row with label + description</span>
+        ├── <span class="new">FilterStatsBar.kt</span>      <span class="note">← CAPTURED | KEPT | DROPPED | DROP% bar</span>
+        ├── <span class="new">ModeSelectorChips.kt</span>   <span class="note">← Horizontal chip row for mode select</span>
+        ├── <span class="new">RiskBadge.kt</span>           <span class="note">← PASS/DROP/Port/SYN/Risk badges</span>
+        └── <span class="file">PacketRowItem.kt</span>       <span class="note">← FilteredPacketRowItem + legacy row</span>
+    </div>
+    <p style="font-size:11px; color:#6b7280;"><span style="color:#7ee787">■</span> Green = newly added files. White = pre-existing files.</p>
+  </div>
+
+</div><!-- end page 3 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     PAGE 4                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="page pagebreak">
+
+  <!-- 6. DATA FLOW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2>StateFlow Data Model &amp; Coroutine Architecture</h2>
+    </div>
+
+    <h3>StateFlows in PacketViewModel</h3>
+    <table>
+      <tr><th>StateFlow</th><th>Type</th><th>Purpose</th></tr>
+      <tr><td><code>_rawPackets</code></td><td><code>List&lt;Packet&gt;</code></td><td>All captured packets (capped at 500, newest first)</td></tr>
+      <tr><td><code>_filteredPackets</code></td><td><code>List&lt;FilteredPacket&gt;</code></td><td>After filter engine — what the UI shows</td></tr>
+      <tr><td><code>_filterConfig</code></td><td><code>FilterConfig</code></td><td>Current active filter settings</td></tr>
+      <tr><td><code>_filterStats</code></td><td><code>FilterStats</code></td><td>Live pass/drop counts &amp; per-rule breakdown</td></tr>
+      <tr><td><code>_isCapturing</code></td><td><code>Boolean</code></td><td>Is the VPN service currently running?</td></tr>
+      <tr><td><code>_vpnPermissionNeeded</code></td><td><code>Boolean</code></td><td>Waiting for user VPN permission dialog?</td></tr>
+    </table>
+
+    <p>All exposed as read-only <code>StateFlow</code>. The UI collects them with <code>collectAsStateWithLifecycle()</code>.</p>
+
+    <h3>Per-Session collectJob — Preventing Stale Packets</h3>
+    <p>
+      A common bug was packets continuing to arrive after the user pressed Stop. This was caused
+      by three independent issues, all fixed with a <strong>per-session collectJob</strong> pattern:
+    </p>
+    <pre>private var collectJob: Job? = null
+
+fun stopCapture(context: Context) {
+    collectJob?.cancel()    // ← Kill coroutine FIRST (no more packets processed)
+    collectJob = null
+    sendActionStop(context) // ← Tell service to stop
+    _isCapturing.value = false
+}
+
+fun launchVpnService(context: Context) {
+    collectJob?.cancel()    // Cancel any stale job from prior session
+    clearPackets()
+    startService(context)   // Service calls resetPacketFlow() — fresh SharedFlow
+    collectJob = viewModelScope.launch {
+        delay(300)          // Wait for TUN interface to establish
+        packetFlow.collect { packet ->
+            if (!_isCapturing.value) return@collect  // Safety guard
+            // … run filter engine, update flows
+        }
+    }
+}</pre>
+  </div>
+
+
+  <!-- 7. UI COMPONENTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2>UI Components Breakdown</h2>
+    </div>
+
+    <h3>PacketListScreen — Main Screen Layout</h3>
+    <div class="flow">
+┌─────────────────────────────────────────┐
+│  Header Bar                             │
+│  "Traffic Analyzer"    [■ STOP]         │
+│  "47 shown · 203 captured"              │
+├─────────────────────────────────────────┤
+│  ▼ FilterPanel (expandable card)        │
+│    [RAW] [CONNECTIONS] [WEB] [CUSTOM]   │
+│    ── TCP Only          ●○              │
+│    ── Outbound Only     ●○              │
+│    ── SYN Only          ○●              │
+│    ── Web Ports Only    ○○              │
+│    ── Drop Local        ○○              │
+│    Abuse threshold ────●──── 25         │
+│  ┌─ Stats Bar ──────────────────────┐   │
+│  │ CAP:203  KEPT:47  DROP:156  77%  │   │
+│  │ ██████░░░░░░░░░░░░░░░░░░░░░░░░  │   │
+│  └──────────────────────────────────┘   │
+├─────────────────────────────────────────┤
+│  Packet Row (LazyColumn)                │
+│  [PASS][TCP][SYN][HTTPS]                │
+│  192.168.1.5 → 142.250.80.14:443  64B  │
+│  ─────────────────────────────────────  │
+│  [DROP][UDP][DNS]                       │
+│  192.168.1.5 → 8.8.8.8:53         32B  │
+│    ↳ WEB_PORTS: Not a web port         │
+└─────────────────────────────────────────┘
+    </div>
+
+    <h3>Badges Shown on Each Packet Row</h3>
+    <table>
+      <tr><th>Badge</th><th>Meaning</th><th>Colors</th></tr>
+      <tr><td>FilterDecisionBadge</td><td>PASS or DROP result</td><td><span class="badge badge-green">PASS</span> <span class="badge badge-red">DROP</span></td></tr>
+      <tr><td>ProtocolBadge</td><td>TCP / UDP / ICMP</td><td>Distinct per protocol</td></tr>
+      <tr><td>SynBadge</td><td>TCP SYN flag detected</td><td><span class="badge badge-yellow">SYN</span> (orange)</td></tr>
+      <tr><td>PortCategoryBadge</td><td>HTTP / HTTPS / DNS / SSH / RDP</td><td><span class="badge badge-blue">HTTPS</span> <span class="badge badge-green">DNS</span></td></tr>
+      <tr><td>RiskBadge</td><td>Abuse score from IPinfo</td><td><span class="badge badge-green">CLEAN</span> <span class="badge badge-yellow">MED</span> <span class="badge badge-red">HIGH</span></td></tr>
+    </table>
+
+    <h3>FilterStatsBar</h3>
+    <pre>[ CAPTURED: 203 ]  [ KEPT: 47 ]  [ DROPPED: 156 ]  [ DROP%: 77% ]
+[████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░]  ← green progress bar
+
+DROP% color rules:
+  Green  = below 40%   (mostly passing)
+  Yellow = 40% – 74%   (moderate filtering)
+  Red    = 75% or more (aggressive filtering)</pre>
+  </div>
+
+</div><!-- end page 4 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     PAGE 5                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="page pagebreak">
+
+  <!-- 8. IP REPUTATION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2>IP Reputation — IPinfo API Integration</h2>
+    </div>
+
+    <h3>How It Works</h3>
+    <p>
+      When a user taps a packet row and presses <strong>ANALYZE</strong>, the app navigates to
+      <code>AnalysisScreen</code>. The <code>AnalysisViewModel</code> calls the IPinfo REST API
+      to fetch geographic and reputation data for the destination IP.
+    </p>
+
+    <table>
+      <tr><th>Detail</th><th>Value</th></tr>
+      <tr><td>Base URL</td><td><code>https://ipinfo.io/</code></td></tr>
+      <tr><td>Endpoint</td><td><code>GET /{ip}?token={your_token}</code></td></tr>
+      <tr><td>Authentication</td><td>Query parameter <code>token</code> (NOT Bearer header)</td></tr>
+      <tr><td>Key storage</td><td><code>local.properties</code> → <code>BuildConfig.IPINFO_API_KEY</code></td></tr>
+      <tr><td>Returns</td><td>City, region, country, org (ISP), abuse score (0–100)</td></tr>
+    </table>
+
+    <h3>Adding Your API Key</h3>
+    <pre># In local.properties (never commit this file to git)
+IPINFO_API_KEY=your_token_here
+IPINFO_BASE_URL=https://ipinfo.io/</pre>
+
+    <pre>// In app/build.gradle.kts
+buildConfigField("String", "IPINFO_API_KEY", "\"${localProperties["IPINFO_API_KEY"]}\"")
+buildConfigField("String", "IPINFO_BASE_URL", "\"${localProperties["IPINFO_BASE_URL"]}\"")</pre>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Self-Exclusion Required</strong>
+        Without <code>addDisallowedApplication(packageName)</code>, the VPN intercepts the app's
+        own API call to ipinfo.io, causing <code>Unable to resolve host ipinfo.io</code>.
+        This was the most subtle bug in the entire project.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 9. BUG FIXES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2>All Bugs Fixed &amp; Lessons Learned</h2>
+    </div>
+
+    <table>
+      <tr><th>#</th><th>Bug</th><th>Root Cause</th><th>Fix</th></tr>
+      <tr>
+        <td>1</td>
+        <td>buildConfigField syntax error</td>
+        <td>Value string had no escaped quotes</td>
+        <td>Correct Kotlin string escaping in build.gradle.kts</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Unable to resolve host ipinfo.io</td>
+        <td>VPN TUN captured app's own traffic</td>
+        <td><code>addDisallowedApplication(packageName)</code></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Wrong API auth format</td>
+        <td>Used <code>Authorization: Bearer</code> header</td>
+        <td>Switched to <code>@Query("token")</code></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Token never passed to API</td>
+        <td>ViewModel built header but didn't pass it</td>
+        <td>Fixed ViewModel → Repository → ApiService chain</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Black screen on startup (12s)</td>
+        <td>Wrong windowBackground + slow Compose JIT</td>
+        <td>SplashScreen API + windowBackground = #0A0F1E</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Packets after Stop (service restarts)</td>
+        <td><code>START_STICKY</code> caused OS to restart service</td>
+        <td>Changed to <code>START_NOT_STICKY</code></td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Packets after Stop (old SharedFlow)</td>
+        <td>Static SharedFlow lived across sessions</td>
+        <td><code>resetPacketFlow()</code> — fresh instance per session</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Packets after Stop (coroutine)</td>
+        <td><code>init {}</code> block collect ran forever</td>
+        <td>Per-session <code>collectJob</code> cancelled in stopCapture()</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>HorizontalDivider not found</td>
+        <td>Used deprecated <code>Divider</code> from Material2</td>
+        <td>Replaced with <code>HorizontalDivider</code> (Material3)</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>themes.xml XML corruption</td>
+        <td>PowerShell Set-Content stripped XML quotes</td>
+        <td>Rewrote file using Write tool directly</td>
+      </tr>
+    </table>
+  </div>
+
+</div><!-- end page 5 -->
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--                     PAGE 6                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="page pagebreak">
+
+  <!-- 10. HOW TO RUN -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2>How to Build &amp; Run</h2>
+    </div>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-body">
+        <strong>Physical Device Required</strong>
+        VPN packet capture does not work on the Android Emulator. You must run on a real Android phone.
+      </div>
+    </div>
+
+    <h3>Prerequisites</h3>
+    <table>
+      <tr><th>Tool</th><th>Required Version</th></tr>
+      <tr><td>Android Studio</td><td>Electric Eel or newer</td></tr>
+      <tr><td>Java / JBR</td><td>Java 17 or Java 21 (Android Studio JBR)</td></tr>
+      <tr><td>Android device</td><td>API 26+ (Android 8.0 or newer)</td></tr>
+      <tr><td>IPinfo account</td><td>Free tier works (50,000 requests/month)</td></tr>
+    </table>
+
+    <h3>Build Steps</h3>
+    <pre>1. Open project in Android Studio
+
+2. Add to local.properties:
+   IPINFO_API_KEY=your_token_here
+   IPINFO_BASE_URL=https://ipinfo.io/
+
+3. Connect physical Android device via USB
+   (Enable USB Debugging in Developer Options)
+
+4. Press ▶ Run — or build APK via
+   Build → Generate Signed Bundle / APK
+
+5. On first launch:
+   → Tap START CAPTURE
+   → Android shows VPN permission dialog
+   → Tap OK to allow
+   → Packets start appearing immediately
+
+6. To analyze an IP:
+   → Tap any packet row
+   → Press ANALYZE
+   → View geo + reputation data</pre>
+
+    <h3>Required Android Permissions</h3>
+    <pre>&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+&lt;uses-permission android:name="android.permission.FOREGROUND_SERVICE" /&gt;
+&lt;uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" /&gt;
+&lt;uses-permission android:name="android.permission.POST_NOTIFICATIONS" /&gt;
+&lt;!-- BIND_VPN_SERVICE is declared on the &lt;service&gt; tag --&gt;</pre>
+  </div>
+
+
+  <!-- 11. CONCEPTS REFERENCE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">11</div>
+      <h2>Key Concepts Quick Reference</h2>
+    </div>
+
+    <table>
+      <tr><th>Concept</th><th>What It Means</th></tr>
+      <tr><td>TUN interface</td><td>Virtual Layer-3 network adapter created by VpnService. OS routes IP packets through it.</td></tr>
+      <tr><td>RFC 791</td><td>The IPv4 standard — defines the exact byte layout of every IPv4 packet header.</td></tr>
+      <tr><td>RFC 1918</td><td>Reserved private IP ranges: 10.x.x.x, 172.16–31.x.x, 192.168.x.x — not routable on public internet.</td></tr>
+      <tr><td>TCP SYN flag</td><td>The first packet in a TCP connection. SYN = new connection attempt. Useful to detect scanning.</td></tr>
+      <tr><td>SharedFlow</td><td>Kotlin hot flow — emits to all active collectors. Used for the packet stream from VPN service.</td></tr>
+      <tr><td>StateFlow</td><td>Kotlin state holder — always has a current value. UI reads these to know what to display.</td></tr>
+      <tr><td>START_NOT_STICKY</td><td>If OS kills the foreground service, do NOT restart it automatically. Prevents ghost packet emission.</td></tr>
+      <tr><td>MVVM</td><td>Model-View-ViewModel: UI observes ViewModel, ViewModel talks to Repository/Service, never reversed.</td></tr>
+      <tr><td>Short-circuit eval</td><td>Filter stops at first DROP — no need to check remaining stages, saves CPU on every packet.</td></tr>
+      <tr><td>Abuse score</td><td>0–100 value from IPinfo: how often this IP has been reported for malicious activity.</td></tr>
+    </table>
+  </div>
+
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Traffic Analyzer — Teacher Notes · Department of Computer Science · February 2026<br>
+    Built with Android VpnService · Kotlin Coroutines · Jetpack Compose · Retrofit · IPinfo API
+  </div>
+
+</div><!-- end page 6 -->
+
+</body>
+</html>
